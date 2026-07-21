@@ -12,10 +12,10 @@ class LibraryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFEFE8DE), // Sand/Paper color for background
+      backgroundColor: const Color(0xFFEFE8DE),
       appBar: AppBar(
         title: const Text('My Library', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
-        backgroundColor: const Color(0xFF4A3424), // Dark wood appbar
+        backgroundColor: const Color(0xFF4A3424),
         centerTitle: true,
         elevation: 4,
         shadowColor: Colors.black,
@@ -58,8 +58,8 @@ class LibraryScreen extends StatelessWidget {
             padding: const EdgeInsets.only(top: 20.0),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3,
-              childAspectRatio: 0.68, // Adjusted ratio to look like a physical book
-              crossAxisSpacing: 0, // 0 spacing so shelves touch perfectly end-to-end
+              childAspectRatio: 0.68,
+              crossAxisSpacing: 0,
               mainAxisSpacing: 0,
             ),
             itemCount: provider.ebooks.length,
@@ -67,7 +67,7 @@ class LibraryScreen extends StatelessWidget {
               return Stack(
                 clipBehavior: Clip.none,
                 children: [
-                   // The Wallpaper backing
+                  
                   Positioned(
                     bottom: 16,
                     left: 0,
@@ -77,7 +77,6 @@ class LibraryScreen extends StatelessWidget {
                        color: const Color(0xFFEFE8DE),
                     ),
                   ),
-                  // Book shelf contiguous row rendering
                   Positioned(
                     bottom: 0,
                     left: 0,
@@ -99,7 +98,7 @@ class LibraryScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  // The Book Card itself (padded so it doesn't touch the borders)
+
                   Padding(
                     padding: const EdgeInsets.only(left: 18.0, right: 18.0, bottom: 16.0, top: 4),
                     child: EbookCard(

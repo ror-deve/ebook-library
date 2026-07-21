@@ -23,7 +23,7 @@ class EbookLibraryApp extends StatelessWidget {
       title: 'Digital Ebook Library',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF5D4037), // Brown wooden color
+          seedColor: const Color(0xFF5D4037), 
           primary: const Color(0xFF5D4037),
         ),
         useMaterial3: true,

@@ -8,7 +8,6 @@ class EbookCard extends StatelessWidget {
 
   const EbookCard({super.key, required this.ebook, required this.onDelete});
 
-  // Pick a nice jewel-tone cover color based on the title
   Color _getCoverColor(String title) {
     final colors = [
       const Color(0xFF1E3D59), // Deep Blue
@@ -41,7 +40,6 @@ class EbookCard extends StatelessWidget {
       },
       child: Stack(
         children: [
-          // Book Cover
           Container(
             width: double.infinity,
             height: double.infinity,
@@ -68,7 +66,6 @@ class EbookCard extends StatelessWidget {
             ),
             child: Stack(
               children: [
-                // Binding strip
                 Positioned(
                   left: 3,
                   top: 0,
@@ -78,7 +75,6 @@ class EbookCard extends StatelessWidget {
                     color: Colors.black.withOpacity(0.1),
                   ),
                 ),
-                // Title & Author text
                 Padding(
                   padding: const EdgeInsets.fromLTRB(10, 20, 10, 30),
                   child: Column(
@@ -119,7 +115,6 @@ class EbookCard extends StatelessWidget {
               ],
             ),
           ),
-          // 🗑️ Delete button — clearly visible in top-right corner
           Positioned(
             top: 4,
             right: 4,

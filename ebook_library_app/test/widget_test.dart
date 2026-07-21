@@ -1,30 +1,98 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
+import 'package:provider/provider.dart';
 import 'package:ebook_library_app/main.dart';
+import 'package:ebook_library_app/providers/ebook_provider.dart';
+import 'package:ebook_library_app/models/ebook.dart';
+import 'package:ebook_library_app/screens/library_screen.dart';
+import 'package:ebook_library_app/widgets/ebook_card.dart';
+
+// A simple mock provider so we don't hit the real rails API during tests
+class MockEbookProvider extends ChangeNotifier implements EbookProvider {
+  @override
+  List<Ebook> ebooks = [];
+  
+  @override
+  bool isLoading = false;
+  
+  @override
+  String error = '';
+  
+  @override
+  List<Ebook> searchResults = [];
+  
+  @override
+  bool isSearching = false;
+
+  @override
+  Future<void> loadEbooks() async {}
+
+  @override
+  Future<bool> uploadEbook(String title, String author, String filePath) async { return true; }
+
+  @override
+  Future<bool> deleteEbook(int id) async { return true; }
+
+  @override
+  void search(String query) {}
+}
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  Widget createTestWidget(Widget child, {MockEbookProvider? mockProvider}) {
+    return MaterialApp(
+      home: ChangeNotifierProvider<EbookProvider>.value(
+        value: mockProvider ?? MockEbookProvider(),
+        child: child,
+      ),
+    );
+  }
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  group('EBook Library Widget Tests', () {
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    testWidgets('Empty State Rendering', (WidgetTester tester) async {
+      final mockProvider = MockEbookProvider();
+      mockProvider.ebooks = [];
+      
+      await tester.pumpWidget(createTestWidget(const LibraryScreen(), mockProvider: mockProvider));
+      await tester.pumpAndSettle();
+      
+      expect(find.text('Your shelf is empty'), findsOneWidget);
+      expect(find.text('Tap the + button to add books'), findsOneWidget);
+    });
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    testWidgets('Ebook Card Rendering', (WidgetTester tester) async {
+      final testBook = Ebook(id: 1, title: 'Flutter Testing Guide', author: 'Dash');
+      
+      await tester.pumpWidget(createTestWidget(
+        Scaffold(body: EbookCard(ebook: testBook, onDelete: () {})), 
+      ));
+      
+      expect(find.text('Flutter Testing Guide'), findsOneWidget);
+      expect(find.text('DASH'), findsOneWidget); 
+      expect(find.byIcon(Icons.delete_outline), findsOneWidget);
+    });
+
+    testWidgets('Delete Confirmation behavior', (WidgetTester tester) async {
+      final testBook = Ebook(id: 1, title: 'Book to Delete', author: 'Author');
+      final mockProvider = MockEbookProvider();
+      mockProvider.ebooks = [testBook];
+
+      await tester.pumpWidget(createTestWidget(const LibraryScreen(), mockProvider: mockProvider));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Book to Delete'), findsOneWidget);
+
+      await tester.tap(find.byIcon(Icons.delete_outline));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Delete Book'), findsOneWidget);
+      expect(find.text('Are you sure you want to delete "Book to Delete"?'), findsOneWidget);
+      expect(find.text('Wait, no'), findsOneWidget);
+      
+      await tester.tap(find.text('Wait, no'));
+      await tester.pumpAndSettle();
+      
+      expect(find.text('Delete Book'), findsNothing);
+    });
   });
 }
