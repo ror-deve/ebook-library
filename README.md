@@ -16,8 +16,6 @@ This project is an end-to-end Digital Ebook Library that allows users to seamles
 - PostgreSQL installed and running
 - Flutter SDK (with Linux desktop build tools like `cmake`, `ninja-build`, `libgtk-3-dev`)
 
-> **Note:** The Rails backend must be running *before* starting the Flutter app — the app makes live API calls on startup and will show connection errors otherwise.
-
 ### 1. Backend (Ruby on Rails)
 Navigate to the rails folder:
 ```bash
@@ -48,13 +46,8 @@ Run the application:
 ```bash
 flutter run -d linux
 ```
-> If Linux desktop build tools aren't available on your machine, run it in Chrome instead as a fallback:
-> ```bash
-> flutter run -d chrome
-> ```
 
 ## How to Run Tests
-
 ### Backend Tests (RSpec)
 We have comprehensive request specs checking all REST endpoints, validation errors, and file uploads.
 ```bash
@@ -72,7 +65,7 @@ flutter test
 ## Manual Testing Checklist
 - [ ] **Upload Flow**: Click the floating action button (+), select a valid PDF, enter metadata, and upload. Ensure it appears instantly in the grid.
 - [ ] **Fail Upload**: Try uploading without a PDF to see the correct validation snackbar error.
-- [ ] **Reader Flow**: Tap an uploaded book to open the full-screen reader. Verify PDF scrolling.
+- [ ] **Reader Flow**: Tap an uploaded book to open the full-screen reader. Verify PDF scrolling. 
 - [ ] **Empty State Reader**: Tap a book that purposely has no PDF attachment and verify the clear "No PDF attached" fallback screen appears.
 - [ ] **Download Flow**: Inside the reader, click the top right download icon and ensure it launches the system browser/downloader to save the PDF.
 - [ ] **Search**: Use the top-right search icon to type a query, verify instantaneous debounced filtering of books.
@@ -100,4 +93,21 @@ During development, AI assistants (like Claude/Cursor/Gemini) were actively util
 - **Debug Build Issues:** AI was actively referenced when debugging deeply cached CMake path issues on Linux and tracking down the `.platform` syntax changes in the `file_picker` v11 dependency.
 - **UI Polish:** Iterated on the "Wooden Bookshelf" layout to perfectly align contiguous shelving without using external image assets, using `GridView` and `Stack`.
 
-Manual reviews were consistently performed on AI output to ensure `file_url` injection didn't break JSON serialization and to confirm smooth user/error handling (for instance, catching exception overrides in the Provider instead of accidentally blanking out the main UX). One notable example of manual cleanup: an earlier AI-generated draft had left duplicate, unused copies of the `Ebook` model and `ApiService` sitting flat in `lib/` after the code was refactored into `models/` and `services/` folders — these dead files were identified via import tracing and removed before submission.
+Manual reviews were consistently performed on AI output to ensure `file_url` injection didn't break JSON serialization and to confirm smooth user/error handling (for instance, catching exception overrides in the Provider instead of accidentally blanking out the main UX).
+
+## Screenshots
+
+**Home / Library View**
+![Home / Library View](assets/screenshots/ebook_home.png)
+
+**Search Screen**
+![Search Screen](assets/screenshots/search_screen.png)
+
+**PDF Reader**
+![PDF Reader](assets/screenshots/pdf_reader_screen.png)
+
+**Delete Confirmation**
+![Delete Confirmation](assets/screenshots/delete_confirmation.png)
+
+**Upload Validation Error**
+![Upload Validation Error](assets/screenshots/create_book_pdf_error.png)
