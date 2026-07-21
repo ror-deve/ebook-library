@@ -158,7 +158,6 @@ RSpec.describe "Ebooks API", type: :request do
       expect(json.length).to eq(1)
       expect(json.first["title"]).to eq("Ruby Mastery")
 
-      # search author
       get "/api/ebooks/search?q=Jane"
       json = JSON.parse(response.body)
       expect(json.length).to eq(1)
