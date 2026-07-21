@@ -4,6 +4,7 @@ class Ebook {
   final String author;
   final String? fileName;
   final String? fileUrl;
+  final String? coverUrl;
 
   Ebook({
     required this.id,
@@ -11,6 +12,7 @@ class Ebook {
     required this.author,
     this.fileName,
     this.fileUrl,
+    this.coverUrl,
   });
 
   factory Ebook.fromJson(Map<String, dynamic> json) {
@@ -24,6 +26,7 @@ class Ebook {
       author: json['author'] ?? 'Unknown',
       fileName: json['file_name'],
       fileUrl: rawUrl,
+      coverUrl: json['cover_url'],
     );
   }
 }

@@ -44,11 +44,11 @@ class EbookProvider with ChangeNotifier {
     }
   }
 
-  Future<bool> uploadEbook(String title, String author, String filePath) async {
+  Future<bool> uploadEbook(String title, String author, String filePath, {String? coverImagePath}) async {
     _isLoading = true;
     notifyListeners();
     try {
-      final newEbook = await _apiService.uploadEbook(title, author, filePath);
+      final newEbook = await _apiService.uploadEbook(title, author, filePath, coverImagePath: coverImagePath);
       _ebooks.insert(0, newEbook); 
       _isLoading = false;
       notifyListeners();
@@ -65,6 +65,7 @@ class EbookProvider with ChangeNotifier {
       final success = await _apiService.deleteEbook(id);
       if (success) {
         _ebooks.removeWhere((book) => book.id == id);
+        _searchResults.removeWhere((book) => book.id == id);
         notifyListeners();
         return true;
       }

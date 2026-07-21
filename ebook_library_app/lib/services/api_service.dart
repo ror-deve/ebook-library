@@ -27,20 +27,23 @@ class ApiService {
 
   Future<bool> deleteEbook(int id) async {
     final response = await http.delete(Uri.parse('$baseUrl/ebooks/$id'));
-    return response.statusCode == 204;
+    return response.statusCode == 204 || response.statusCode == 404;
   }
 
-  Future<Ebook> uploadEbook(String title, String author, String filePath) async {
+  Future<Ebook> uploadEbook(String title, String author, String filePath, {String? coverImagePath}) async {
     var request = http.MultipartRequest('POST', Uri.parse('$baseUrl/ebooks'));
     request.fields['ebook[title]'] = title;
     request.fields['ebook[author]'] = author;
-    
     request.files.add(await http.MultipartFile.fromPath('ebook[file]', filePath));
     
-    var response = await request.send();
+    if (coverImagePath != null) {
+      request.files.add(await http.MultipartFile.fromPath('ebook[cover_image]', coverImagePath));
+    }
+
+    var streamedResponse = await request.send();
     
-    if (response.statusCode == 201) {
-      var responseData = await response.stream.bytesToString();
+    if (streamedResponse.statusCode == 201) {
+      var responseData = await streamedResponse.stream.bytesToString();
       return Ebook.fromJson(json.decode(responseData));
     } else {
       throw Exception('Failed to upload ebook.');

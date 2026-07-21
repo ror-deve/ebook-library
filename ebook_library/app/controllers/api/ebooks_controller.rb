@@ -69,6 +69,7 @@ module Api
     def serialize_ebook(ebook)
       data = ebook.as_json
       data['file_url'] = rails_blob_url(ebook.file) if ebook.file.attached?
+      data['cover_url'] = rails_blob_url(ebook.cover_image) if ebook.cover_image.attached?
       data
     end
 

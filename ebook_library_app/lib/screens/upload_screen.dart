@@ -14,10 +14,11 @@ class _UploadScreenState extends State<UploadScreen> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _authorController = TextEditingController();
-  
   String? _selectedFilePath;
   String? _selectedFileName;
-
+  
+  String? _selectedCoverPath;
+  String? _selectedCoverName;
   @override
   void dispose() {
     _titleController.dispose();
@@ -39,6 +40,19 @@ class _UploadScreenState extends State<UploadScreen> {
     }
   }
 
+  Future<void> _pickCoverFile() async {
+    FilePickerResult? result = await FilePicker.pickFiles(
+      type: FileType.image,
+    );
+
+    if (result != null) {
+      setState(() {
+        _selectedCoverPath = result.files.single.path;
+        _selectedCoverName = result.files.single.name;
+      });
+    }
+  }
+
   Future<void> _upload() async {
     if (_formKey.currentState!.validate() && _selectedFilePath != null) {
       try {
@@ -46,6 +60,7 @@ class _UploadScreenState extends State<UploadScreen> {
           _titleController.text,
           _authorController.text,
           _selectedFilePath!,
+          coverImagePath: _selectedCoverPath,
         );
 
         if (!mounted) return;
@@ -98,6 +113,13 @@ class _UploadScreenState extends State<UploadScreen> {
                 onPressed: _pickFile,
                 icon: const Icon(Icons.picture_as_pdf),
                 label: Text(_selectedFileName ?? 'Select PDF File'),
+                style: OutlinedButton.styleFrom(padding: const EdgeInsets.all(16)),
+              ),
+              const SizedBox(height: 16),
+              OutlinedButton.icon(
+                onPressed: _pickCoverFile,
+                icon: const Icon(Icons.image),
+                label: Text(_selectedCoverName ?? 'Select Cover Image (Optional)'),
                 style: OutlinedButton.styleFrom(padding: const EdgeInsets.all(16)),
               ),
               const SizedBox(height: 32),

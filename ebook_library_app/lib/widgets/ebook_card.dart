@@ -27,6 +27,16 @@ class EbookCard extends StatelessWidget {
     return colors[hash.abs() % colors.length];
   }
 
+  String? _getFullCoverUrl() {
+    if (ebook.coverUrl != null && ebook.coverUrl!.isNotEmpty && ebook.coverUrl != 'null') {
+      if (ebook.coverUrl!.startsWith('/')) {
+        return '${"http://localhost:3000"}${ebook.coverUrl}';
+      }
+      return ebook.coverUrl!;
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -45,6 +55,12 @@ class EbookCard extends StatelessWidget {
             height: double.infinity,
             decoration: BoxDecoration(
               color: _getCoverColor(ebook.title),
+              image: _getFullCoverUrl() != null 
+                  ? DecorationImage(
+                      image: NetworkImage(_getFullCoverUrl()!),
+                      fit: BoxFit.cover,
+                    )
+                  : null,
               borderRadius: const BorderRadius.only(
                 topRight: Radius.circular(5),
                 bottomRight: Radius.circular(5),
@@ -75,8 +91,9 @@ class EbookCard extends StatelessWidget {
                     color: Colors.black.withOpacity(0.1),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 20, 10, 30),
+                if (_getFullCoverUrl() == null)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 20, 10, 30),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
